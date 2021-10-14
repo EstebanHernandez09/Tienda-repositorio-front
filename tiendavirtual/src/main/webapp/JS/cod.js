@@ -201,3 +201,47 @@ function buscar_nom_pro(){
 		location.href = "http://localhost:6450/login/VentasServlet?accion=Traerp&cod_producto="+id+"&nombre_cliente="+nombre+"&cedula_cliente="+cedula;
 	}
 }
+
+function valorTotalProducto(){
+	var val_unitario = document.getElementById("valor_unitario").value;
+	val_unitario = val_unitario.substr(1);
+	val_unitario = parseInt(val_unitario);
+	var cantidad = document.getElementById("cantidad").value;
+	cantidad = parseInt(cantidad);
+	var resultado = val_unitario * cantidad;
+	//alert(resultado);
+	if(isNaN(resultado) || resultado == null){
+		document.getElementById("valor_total").value = "$ "+0;
+	}else{
+		document.getElementById("valor_total").value = "$ "+resultado;
+	}
+	
+}
+
+function agregar_producto(){
+	var nombre = document.getElementById("nombre_cliente").value;
+	var cedula = document.getElementById("cedula_cliente").value;
+	var cod_producto = document.getElementById("cod_producto").value;
+	var nom_producto = document.getElementById("nom_producto").value;
+	var valor_unitario = document.getElementById("valor_unitario").value;
+	var cantidad = document.getElementById("cantidad").value;
+	var iva = document.getElementById("iva").value;
+	valor_unitario = valor_unitario.substr(1);
+	iva = iva.substr(0,2);
+	cedula = parseInt(cedula);
+	if(nombre == "" || cedula == "" || cod_producto == "" || nom_producto == "" || valor_unitario == "" || cantidad == "" || cod_producto == ""){
+		Swal.fire({
+		  title: 'Espera!',
+		  text: "No se debe dejar ningun campo vacio",
+		  icon: 'warning',
+		  showCancelButton: false,
+		  confirmButtonColor: '#3085d6',
+		  confirmButtonText: 'Entiendo'
+		})
+	}else{
+		location.href = "http://localhost:6450/login/VentasServlet?accion=add&nombre_cliente="+nombre+"&cedula_cliente="+cedula+"&cod_producto="+cod_producto+"&nom_producto="+nom_producto+"&valor_unitario="+valor_unitario+"&cantidad="+cantidad+"&iva="+iva;
+	}
+	
+	
+	
+}

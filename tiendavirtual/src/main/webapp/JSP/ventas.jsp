@@ -4,6 +4,7 @@
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.util.Date' %>
+
 <html>
 <head>
 <meta charset="ISO-8859-1">
@@ -86,7 +87,7 @@
 	                      </div>
 	                      <div class="col-md-4">
 		                      <label for="nombre_cliente">Nombre cliente</label>
-		                      <input type="text" class="form-control" id="nombre_cliente" name="nombre_cliente" value="${clienteTraer.getNombre_cliente()}">
+		                      <input type="text" class="form-control" id="nombre_cliente" name="nombre_cliente" value="${clienteTraer.getNombre_cliente()}" disabled>
 	                      </div>
 	                      <%} else{%>
 	                      	<div class="col-md-4">
@@ -98,7 +99,7 @@
 	                      </div>
 	                      <div class="col-md-4">
 		                      <label for="nombre_cliente">Nombre cliente</label>
-		                      <input type="text" class="form-control" id="nombre_cliente" name="nombre_cliente" value="<%=request.getAttribute("cliente")%>">
+		                      <input type="text" class="form-control" id="nombre_cliente" name="nombre_cliente" value="<%=request.getAttribute("cliente")%>" disabled>
 	                      </div>
 	                      <%} %>
 	                      <div class="col-md-4">
@@ -111,26 +112,35 @@
 	                      <div class="col-md-3">
 		                      <label for="consecutivo">Codigo producto</label>
 		                      <div class="btn-group col-md-12">
-		                      	<input type="text" class="form-control" id="cod_producto" name="cod_producto" value="${productoTraer.getCodigo_producto()}holaaa">
+		                      	<input type="text" class="form-control" id="cod_producto" name="cod_producto" value="${productoTraer.getCodigo_producto()}">
 		                      	<button type="button" onclick="buscar_nom_pro()" class="btn btn-success"><i class="far fa-check-circle"></i></button>
 		                      </div>
 	                      </div>
 	                      
-	                      <div class="col-md-4">
+	                      <div class="col-md-3">
 		                      <label for="consecutivo">Nombre</label>
 		                      <input type="text" class="form-control" id="nom_producto" name="nom_producto" value="${productoTraer.getNombre_producto()}" disabled>
 	                      </div>
 	                      <div class="col-md-1">
 		                      <label for="consecutivo">Cantidad</label>
-		                      <input type="text" class="form-control" id="cantidad" name="cantidad" value="hola">
+		                      <input type="text" class="form-control" id="cantidad" name="cantidad" onkeyup="valorTotalProducto()">
 	                      </div>
-	                      <div class="col-md-3">
+	                      <div class="col-md-2">
+		                      <label for="consecutivo">Valor Unitario</label>
+		                      <input type="text" class="form-control" id="valor_unitario" name="valor_unitario" value="$ ${productoTraer.getPrecio_venta()}" disabled>
+	                      </div>
+	                       <div class="col-md-1">
+		                      <label for="consecutivo">IVA</label>
+		                      <input type="text" class="form-control" id="iva" name="iva" value="${productoTraer.getIvacompra()}%" disabled>
+	                      </div>
+	                      <div class="col-md-2">
 		                      <label for="consecutivo">Valor Total</label>
-		                      <input type="text" class="form-control" id="valor_total" name="valor_total" value="hola" disabled>
+		                      <div class="btn-group col-md-12">
+		                       <input type="text" class="form-control" id="valor_total" name="valor_total" value="" disabled>
+		                      <button class="btn btn-success" onclick="agregar_producto()"><i class="far fa-plus-square"></i></button>
 	                      </div>
-	                      <div class="col-md-1 my-4">
-		                      <button class="btn btn-success"><i class="far fa-plus-square"></i></button>
 	                      </div>
+	                      
                        <!--</form>-->
                       
                       <div class="col-md-12">
@@ -141,6 +151,7 @@
 					        <thead class="text-capitalize ">
 					            <tr style="background: #3F6791; color: #fff;">
 					                <th class="text-center">#</th>
+					                <th class="text-center">CODIGO PRODUCTO</th>
 					                <th class="text-center">NOMBRE PRODUCTO</th>
 					                <th class="text-center">CANTIDAD</th>
 					                <th class="text-center">IVA</th>
@@ -149,7 +160,7 @@
 					            </tr>
 					        </thead>
 					        <tbody>
-					        	<tr><td style="text-align: center;" colspan="6">No se han ingresado productos a la venta</td></td>
+					        	
 					        </tbody>
 						</table>
                       </div>

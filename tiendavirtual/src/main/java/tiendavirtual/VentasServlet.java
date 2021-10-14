@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/VentasServlet")
 public class VentasServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	List<DetalleVentas> listaVentas= new ArrayList<>();
+	DetalleVentas lista_venta = new DetalleVentas();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -115,15 +118,13 @@ public class VentasServlet extends HttpServlet {
 	       	e.printStackTrace();
 		 }
     }
+    
     public void agregarProducto(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	long contador = 0, acusubtotal = 0, subtotaliva = 0, totalpagar = 0, codProducto = 0, factura = 2;
     	String nombre_producto = "";
-    	int cantidad = 0, valunitario = 0, subtotal = 0, iva = 0;
-    	double valorIva = 0;
-    	List<DetalleVentas> listaVentas= new ArrayList<>();
-    	DetalleVentas lista_venta = new DetalleVentas();
+    	int cantidad = 0, valunitario = 0, subtotal = 0, iva = 0,valorIva = 0;
     	
-    	lista_venta= new DetalleVentas(); 
+    	lista_venta = new DetalleVentas(); 
     	contador++;
     	Long cedula = Long.parseLong(request.getParameter("cedula_cliente"));
     	String cliente = request.getParameter("nombre_cliente");
@@ -142,22 +143,22 @@ public class VentasServlet extends HttpServlet {
     	lista_venta.setValor_unitario(valunitario);
     	lista_venta.setCantidad_producto(cantidad);
     	lista_venta.setCodigo_venta(factura);
-    	lista_venta.setValoriva(subtotaliva);
+    	lista_venta.setValoriva(valorIva);
     	lista_venta.setValor_venta(subtotal);
     	lista_venta.setValor_total(totalpagar);
     	listaVentas.add(lista_venta);
     	
     	for(int i=0; i<listaVentas.size();i++) {
     		acusubtotal += listaVentas.get(i).getValor_venta();
-    		subtotaliva += listaVentas.get(i).getValoriva();
+    		valorIva += listaVentas.get(i).getValoriva();
     	}
-    	totalpagar = acusubtotal + subtotaliva;
+    	totalpagar = acusubtotal + valorIva;
     	lista_venta.setValor_total(totalpagar);
     	//una vez hecho todos los calculos ahora hacemos el envio de la info al formulario ventas seccion2
     	request.setAttribute("listaventas", listaVentas);
     	request.setAttribute("totalsubtotal", acusubtotal);
-    	request.setAttribute("totaliva", subtotaliva);
-    	request.setAttribute("totalapagar", totalpagar);
+    	request.setAttribute("totaliva", valorIva);
+    	request.setAttribute("totalpagar", totalpagar);
     	request.setAttribute("cedula", cedula);
 		request.setAttribute("cliente", cliente);
 		System.out.println("Proveedor no Agregado");
@@ -175,7 +176,7 @@ public class VentasServlet extends HttpServlet {
 		}else if (accion.equals("Traerp")) {
 			this.TraerProducto(request, response);
 		}else if (accion.equals("add")) {
-			this.TraerProducto(request, response);
+			this.agregarProducto(request, response);
 		}
 	}
 

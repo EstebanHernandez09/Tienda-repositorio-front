@@ -4,7 +4,8 @@
 <%@ page import='java.text.SimpleDateFormat' %>
 <%@ page import='java.text.DateFormat' %>
 <%@ page import='java.util.Date' %>
-
+<%@ page import='tiendavirtual.DetalleVentas' %>
+<%@ page import='java.util.ArrayList' %>
 <html>
 <head>
 <meta charset="ISO-8859-1">
@@ -159,8 +160,29 @@
 					                <th class="text-center">TOTAL</th>
 					            </tr>
 					        </thead>
-					        <tbody>
-					        	
+					        <tbody><%
+					        if(request.getAttribute("listaventas") == null){%>
+					        	<tr><td style="text-align: center;" colspan="7">No se han añadido productos a la venta</td></tr>
+					        <%}else{
+					        	ArrayList<DetalleVentas> lista = (ArrayList<DetalleVentas>) request.getAttribute("listaventas");
+							        	int contador = 0;
+								        for (DetalleVentas venta : lista) {
+								        	contador++;
+								        	double total = venta.getValor_venta();
+								        %>
+								            <tr>
+								                <td style="text-align: center;"><%=contador%></td>
+								                <td style="text-align: center;"><%=venta.getCodigo_producto()%></td>
+								                <td style="text-align: center;"><%=venta.getNombre_producto()%></td>
+								                <td style="text-align: center;"><%=venta.getCantidad_producto()%></td>
+								                <td style="text-align: center;"><%=venta.getValoriva()%></td>
+								                <td style="text-align: center;"><%=venta.getValor_unitario()%></td>
+								                <td style="text-align: center;"><%=venta.getValor_venta()%></td>
+								            </tr>
+								            <%} if(contador < 1){%>
+							            	<tr><td style="text-align: center;" colspan="6">No se han añadido productos a la venta</td></tr>
+								            <%}
+								            }%>
 					        </tbody>
 						</table>
                       </div>
@@ -174,15 +196,15 @@
 			                    <table class="table">
 			                      <tr>
 			                        <th style="width:50%">Total venta:</th>
-			                        <td>$0000</td>
+			                        <td>$<%=request.getAttribute("totalsubtotal") %></td>
 			                      </tr>
 			                      <tr>
 			                        <th>Total IVA</th>
-			                        <td>$00000</td>
+			                        <td>$<%=request.getAttribute("totaliva") %></td>
 			                      </tr>
 			                      <tr>
-			                        <th>Total:</th>
-			                        <td>$0000</td>
+			                        <th>Total a Pagar:</th>
+			                        <td>$<%=request.getAttribute("totalpagar") %></td>
 			                      </tr>
 			                    </table>
 			                  </div>

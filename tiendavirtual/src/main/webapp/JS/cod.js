@@ -226,8 +226,9 @@ function agregar_producto(){
 	var valor_unitario = document.getElementById("valor_unitario").value;
 	var cantidad = document.getElementById("cantidad").value;
 	var iva = document.getElementById("iva").value;
-	valor_unitario = valor_unitario.substr(1);
+	valor_unitario = valor_unitario.substr(2);
 	iva = iva.substr(0,2);
+	valor_unitario = parseInt(valor_unitario);
 	cedula = parseInt(cedula);
 	if(nombre == "" || cedula == "" || cod_producto == "" || nom_producto == "" || valor_unitario == "" || cantidad == "" || cod_producto == ""){
 		Swal.fire({

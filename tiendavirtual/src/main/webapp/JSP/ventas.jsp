@@ -16,7 +16,7 @@
 	if(session.getAttribute("nombre") == null && session.getAttribute("usuario") == null){
 		%>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed" onload="validacion()">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed" onload="factura()">
 <script>
 		Swal.fire({
 			  title: 'Espera!',
@@ -114,7 +114,7 @@
 		                      <label for="consecutivo">Codigo producto</label>
 		                      <div class="btn-group col-md-12">
 		                      	<input type="text" class="form-control" id="cod_producto" name="cod_producto" value="${productoTraer.getCodigo_producto()}">
-		                      	<button type="button" onclick="buscar_nom_pro()" class="btn btn-success"><i class="far fa-check-circle"></i></button>
+		                      	<button type="button" onclick="buscar_nom_pro('totaliva')" class="btn btn-success"><i class="far fa-check-circle"></i></button>
 		                      </div>
 	                      </div>
 	                      
@@ -194,18 +194,40 @@
 
 			                  <div class="table-responsive">
 			                    <table class="table">
+			                     <%if(request.getAttribute("totalsubtotal") != null) {%>
 			                      <tr>
 			                        <th style="width:50%">Total venta:</th>
-			                        <td>$<%=request.getAttribute("totalsubtotal") %></td>
+			                        <td id="totalsubtotal">$ <%=request.getAttribute("totalsubtotal") %></td>
+			                      </tr>
+			                      <%}else{%>
+			                    	  <tr>
+			                        <th style="width:50%">Total venta:</th>
+			                        <td id="totalsubtotal">$ 0</td>
+			                      </tr>
+			                      <%}
+			                     if(request.getAttribute("totaliva") != null) { %>
+			                      <tr>
+			                        <th>Total IVA:</th>
+			                        <td id="totaliva">$ <%=request.getAttribute("totaliva") %></td>
 			                      </tr>
 			                      <tr>
-			                        <th>Total IVA</th>
-			                        <td>$<%=request.getAttribute("totaliva") %></td>
+			                      <%}else{%>
+		                    	  <tr>
+			                        <th>Total IVA:</th>
+			                        <td id="totaliva">$ 0</td>
 			                      </tr>
+			                      <%}
+			                     if(request.getAttribute("totalpagar") != null) { %>
+			                     <tr>
+			                        <th>Total a Pagar:</th>
+			                        <td id="totalpagar">$ <%=request.getAttribute("totalpagar") %></td>
+			                      </tr>
+			                      <%} else{%>
 			                      <tr>
 			                        <th>Total a Pagar:</th>
-			                        <td>$<%=request.getAttribute("totalpagar") %></td>
+			                        <td id="totalpagar">$ 0</td>
 			                      </tr>
+			                      <%}%>
 			                    </table>
 			                  </div>
                 			</div>

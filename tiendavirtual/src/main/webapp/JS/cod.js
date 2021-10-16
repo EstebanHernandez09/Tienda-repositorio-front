@@ -181,11 +181,17 @@ function buscar_nom_cli(){
 	}
 }
 
-function buscar_nom_pro(){
+function buscar_nom_pro(totaliva){
 	var id = document.getElementById("cod_producto").value;
 	id = parseInt(id);
 	var nombre = document.getElementById("nombre_cliente").value;
 	var cedula = document.getElementById("cedula_cliente").value;
+	var iva = document.getElementById("totaliva").innerHTML;
+	iva = iva.substr(2);
+	var total = document.getElementById("totalpagar").innerHTML;
+	total = total.substr(2);
+	var subtotal = document.getElementById("totalsubtotal").innerHTML;
+	subtotal = subtotal.substr(2);
 	cedula = parseInt(cedula);
 	if($("#cod_producto").val().length < 1){
 		Swal.fire({
@@ -198,7 +204,7 @@ function buscar_nom_pro(){
 		})
 	}else{
 		//alert(id);
-		location.href = "http://localhost:6450/login/VentasServlet?accion=Traerp&cod_producto="+id+"&nombre_cliente="+nombre+"&cedula_cliente="+cedula;
+		location.href = "http://localhost:6450/login/VentasServlet?accion=Traerp&cod_producto="+id+"&nombre_cliente="+nombre+"&cedula_cliente="+cedula+"&total="+total+"&subtotal="+subtotal+"&iva="+iva;
 	}
 }
 
@@ -206,9 +212,13 @@ function valorTotalProducto(){
 	var val_unitario = document.getElementById("valor_unitario").value;
 	val_unitario = val_unitario.substr(1);
 	val_unitario = parseInt(val_unitario);
+	var iva = document.getElementById("iva").value;
+	iva = iva.substr(0,2);
+	iva = "0."+iva;
+	iva = parseFloat(iva);
 	var cantidad = document.getElementById("cantidad").value;
 	cantidad = parseInt(cantidad);
-	var resultado = val_unitario * cantidad;
+	var resultado =	((val_unitario*iva)+val_unitario)*cantidad;
 	//alert(resultado);
 	if(isNaN(resultado) || resultado == null){
 		document.getElementById("valor_total").value = "$ "+0;
@@ -241,8 +251,10 @@ function agregar_producto(){
 		})
 	}else{
 		location.href = "http://localhost:6450/login/VentasServlet?accion=add&nombre_cliente="+nombre+"&cedula_cliente="+cedula+"&cod_producto="+cod_producto+"&nom_producto="+nom_producto+"&valor_unitario="+valor_unitario+"&cantidad="+cantidad+"&iva="+iva;
-	}
-	
-	
-	
+	}	
+}
+
+function factura(){
+	alert("holaa");
+	location.href = "http://localhost:6450/login/VentasServlet?accion=factura";
 }

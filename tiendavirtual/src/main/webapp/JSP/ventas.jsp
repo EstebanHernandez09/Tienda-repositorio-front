@@ -30,7 +30,6 @@
 			})
 			</script>
 		<%
-		//response.sendRedirect("http://localhost:6450/login/JSP/login.jsp");
 	}else{
 		if(request.getAttribute("traer") == "noExiste"){%>
 			<script>
@@ -43,7 +42,7 @@
 				  confirmButtonText: 'Entiendo'
 				})
 				</script>
-		<%}else if(request.getAttribute("respuesta") == "excelente"){
+		<%} if(request.getAttribute("respuesta") == "excelente"){
 			%>
 			<script>
 			Swal.fire({
@@ -52,6 +51,8 @@
 				  icon: 'success',
 				  showCancelButton: false,
 				  confirmButtonColor: '#3085d6'
+				}).then((result) => {
+					location.href = "http://localhost:6450/login/VentasServlet?accion=factura";
 				})
 				</script>
 	<%} else if(request.getAttribute("respuesta") == "error") {
@@ -64,6 +65,8 @@
 				  showCancelButton: false,
 				  confirmButtonColor: '#3085d6',
 				  confirmButtonText: 'Entiendo'
+				}).then((result) => {
+					location.href = "http://localhost:6450/login/VentasServlet?accion=factura";
 				})
 				</script>
 				
@@ -212,7 +215,7 @@
 						</table>
                       </div>
                       <div class="col-6">
-                      	<img src="${pageContext.request.contextPath}/img/logo.png" alt="Logo_tienda" height="250" width="500">
+                      	<img class="img-fluid" src="${pageContext.request.contextPath}/img/logo.png" alt="Logo_tienda" height="250" width="500">
                       </div>
                           <div class="col-6">
 			                  <p class="m-0">Monto de venta - <%= new SimpleDateFormat("yyyy/MM/dd").format(new Date())%></p>

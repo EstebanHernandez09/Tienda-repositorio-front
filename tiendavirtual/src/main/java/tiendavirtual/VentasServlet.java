@@ -200,7 +200,7 @@ public class VentasServlet extends HttpServlet {
     	request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);	
     }
     
-    public void ingresoVenta(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public void ingresoVenta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	int respuesta = 0;
     	String val = "";
     	String preloader = "preloader";
@@ -214,30 +214,85 @@ public class VentasServlet extends HttpServlet {
     	
     	venta.setCodigo_venta(codigo_venta);
     	venta.setCedula_cliente(cedula_cliente);
-    	venta.setCodigo_venta(codigo_venta);
+    	venta.setCedula_usuario(cedula_usuario);
     	venta.setIvaventa(ivaventa);
-    	venta.setTotal_venta(ivaventa);
-    	venta.setValor_venta(ivaventa);
+    	venta.setTotal_venta(totalventa);
+    	venta.setValor_venta(valorventa);
     	try {
     		respuesta = VentasJSON.postJSON(venta);
     		if (respuesta == 200) {
     			val = "excelente";
 				request.setAttribute("respuesta", val);
 				request.setAttribute("preloader", preloader);
-    			request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
-    			System.out.println("Usuario Agregado");
+    			request.getRequestDispatcher("/VentasServlet?accion=factura&cod="+codigo_venta).forward(request, response);
+    			System.out.println("venta Agregada");
     		} else {
     			val = "error";
 				request.setAttribute("respuesta", val);
 				request.setAttribute("preloader", preloader);
-    			request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
-    			System.out.println("Usuario no Agregado");
+    			request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);
+    			System.out.println("Venta no Agregada");
+    			System.out.println(respuesta);
     		}
     		
     	}catch (IOException e){
     		// TODO: handle exception
     		e.printStackTrace();
     	}
+    }
+    
+    public void detalleVenta(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	int respuesta = 0, cantidad = 0;;
+    	String val = "";
+    	String preloader = "preloader";
+    	double unitario = 0.0, totalpagar = 0.0, iva = 0.0, subtotal = 0.0;
+		long codproducto = 0;
+		long cod_venta =Long.parseLong(request.getParameter("cod"));
+    	lista_venta = new DetalleVentas(); 
+    	DetalleVentas detalleventa = new DetalleVentas();
+    	
+    	long subindice = 0,cont = 0;
+    	for(int i=0; i<listaVentas.size();i++) {
+			subindice = cont;
+			unitario = listaVentas.get(i).getValor_unitario();
+			totalpagar = listaVentas.get(i).getValor_total();
+			codproducto = listaVentas.get(i).getCodigo_producto();
+			cantidad = listaVentas.get(i).getCantidad_producto();
+			iva = listaVentas.get(i).getValoriva();
+			subtotal = listaVentas.get(i).getValor_venta();
+			//System.out.println("existe");
+			cont++;
+			totalpagar = totalpagar+iva;
+			detalleventa.setCodigo_detalle_venta(subindice);
+			detalleventa.setCantidad_producto(cantidad);
+			detalleventa.setCodigo_producto(codproducto);
+			detalleventa.setCodigo_venta(cod_venta);
+			detalleventa.setValor_total(totalpagar);
+			detalleventa.setValor_venta(unitario);
+			detalleventa.setValoriva(iva);
+			
+			try {
+	    		respuesta = DetalleVentasJSON.postJSON(detalleventa);
+	    		if (respuesta == 200) {
+	    			val = "excelente";
+					request.setAttribute("respuesta", val);
+					request.setAttribute("preloader", preloader);
+	    			request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);
+	    			System.out.println("venta Agregada");
+	    		} else {
+	    			val = "error";
+					request.setAttribute("respuesta", val);
+					request.setAttribute("preloader", preloader);
+	    			request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);
+	    			System.out.println("Venta no Agregada");
+	    			System.out.println(respuesta);
+	    		}
+	    		
+	    	}catch (IOException e){
+	    		// TODO: handle exception
+	    		e.printStackTrace();
+	    	}
+    	}	
     }
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -255,6 +310,8 @@ public class VentasServlet extends HttpServlet {
 			this.factura(request, response);
 		}else if (accion.equals("ingreso")) {
 			this.ingresoVenta(request, response);
+		}else if (accion.equals("detalle")) {
+			this.detalleVenta(request, response);
 		}
 	}
 

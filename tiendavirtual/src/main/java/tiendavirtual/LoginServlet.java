@@ -41,9 +41,11 @@ public class LoginServlet extends HttpServlet {
 			for (Usuarios usuario : lista) {
 				if (usuario.getUsuario().equals(usua) && usuario.getPassword().equals(pass)) {
 					String email = usuario.getEmail_usuario();
+					long numdoc = usuario.getCedula_usuario();
 					HttpSession sesion = request.getSession();
 					sesion.setAttribute("usuario", usua);
 					sesion.setAttribute("email", email);
+					sesion.setAttribute("numdoc",numdoc );	
 					request.setAttribute("usuario", usuario);
 					val = "ingreso";
 					request.setAttribute("respuesta", val);

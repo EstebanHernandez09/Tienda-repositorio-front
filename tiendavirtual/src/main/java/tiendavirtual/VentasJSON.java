@@ -80,8 +80,12 @@ public class VentasJSON {
 		http.setRequestProperty("Accept", "application/json");
 		http.setRequestProperty("Content-Type", "application/json");
 
-		String data = "{" + "\"ivaventa\": \""+ venta.getIvaventa() + "\",\"total_venta\":\"" 
-				+ venta.getTotal_venta() + "\",\"valor_venta\":\"" + venta.getValor_venta() + "\"}";
+		String data = "{"  + "\"codigo_venta\": \""+ String.valueOf(venta.getCodigo_venta()) 
+						   + "\",\"cedula_cliente\": \""+ venta.getCedula_cliente()
+						   + "\",\"cedula_usuario\": \""+ venta.getCedula_usuario()
+						   + "\",\"ivaventa\": \""+ venta.getIvaventa() 
+						   + "\",\"total_venta\":\""  + venta.getTotal_venta() 
+						   + "\",\"valor_venta\":\"" + venta.getValor_venta() + "\"}";
 		byte[] out = data.getBytes(StandardCharsets.UTF_8);
 		OutputStream stream = http.getOutputStream();
 		stream.write(out);

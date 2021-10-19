@@ -166,6 +166,8 @@ function buscarProveedor(){
 function buscar_nom_cli(){
 	var id = document.getElementById("cedula_cliente").value;
 	id = parseInt(id);
+	var num = document.getElementById("consecutivo").value;
+	num = parseInt(num);
 	if($("#cedula_cliente").val().length < 1){
 		Swal.fire({
 		  title: 'Espera!',
@@ -177,7 +179,7 @@ function buscar_nom_cli(){
 		})
 	}else{
 		//alert(id);
-		location.href = "http://localhost:6450/login/VentasServlet?accion=Traer&cedula_cliente="+id;
+		location.href = "http://localhost:6450/login/VentasServlet?accion=Traer&cedula_cliente="+id+"&num="+num;
 	}
 }
 
@@ -193,6 +195,8 @@ function buscar_nom_pro(totaliva){
 	var subtotal = document.getElementById("totalsubtotal").innerHTML;
 	subtotal = subtotal.substr(2);
 	cedula = parseInt(cedula);
+	var num = document.getElementById("consecutivo").value;
+	num = parseInt(num);
 	if($("#cod_producto").val().length < 1){
 		Swal.fire({
 		  title: 'Espera!',
@@ -204,7 +208,7 @@ function buscar_nom_pro(totaliva){
 		})
 	}else{
 		//alert(id);
-		location.href = "http://localhost:6450/login/VentasServlet?accion=Traerp&cod_producto="+id+"&nombre_cliente="+nombre+"&cedula_cliente="+cedula+"&total="+total+"&subtotal="+subtotal+"&iva="+iva;
+		location.href = "http://localhost:6450/login/VentasServlet?accion=Traerp&cod_producto="+id+"&nombre_cliente="+nombre+"&cedula_cliente="+cedula+"&total="+total+"&subtotal="+subtotal+"&iva="+iva+"&num="+num;
 	}
 }
 
@@ -236,6 +240,8 @@ function agregar_producto(){
 	var valor_unitario = document.getElementById("valor_unitario").value;
 	var cantidad = document.getElementById("cantidad").value;
 	var iva = document.getElementById("iva").value;
+	var num = document.getElementById("consecutivo").value;
+	num = parseInt(num);
 	valor_unitario = valor_unitario.substr(2);
 	iva = iva.substr(0,2);
 	valor_unitario = parseInt(valor_unitario);
@@ -250,11 +256,37 @@ function agregar_producto(){
 		  confirmButtonText: 'Entiendo'
 		})
 	}else{
-		location.href = "http://localhost:6450/login/VentasServlet?accion=add&nombre_cliente="+nombre+"&cedula_cliente="+cedula+"&cod_producto="+cod_producto+"&nom_producto="+nom_producto+"&valor_unitario="+valor_unitario+"&cantidad="+cantidad+"&iva="+iva;
+		location.href = "http://localhost:6450/login/VentasServlet?accion=add&nombre_cliente="+nombre+"&cedula_cliente="+cedula+"&cod_producto="+cod_producto+"&nom_producto="+nom_producto+"&valor_unitario="+valor_unitario+"&cantidad="+cantidad+"&iva="+iva+"&num="+num;
 	}	
 }
-
-function factura(){
-	alert("holaa");
-	location.href = "http://localhost:6450/login/VentasServlet?accion=factura";
+/*
+$(document).ready(function(){
+	if(document.getElementById("consecutivo").value == "null"){
+		location.href = "http://localhost:6450/login/VentasServlet?accion=factura";
+	}
+});
+*/
+function ingresarVenta(){
+	var cedula = document.getElementById("cedula_cliente").value;
+	var numdoc = document.getElementById("numdoc").value;
+	var num = document.getElementById("consecutivo").value;
+	var iva = document.getElementById("totaliva").innerHTML;
+	iva = iva.substr(2);
+	var total = document.getElementById("totalpagar").innerHTML;
+	total = total.substr(2);
+	var subtotal = document.getElementById("totalsubtotal").innerHTML;
+	subtotal = subtotal.substr(2);
+	if($("#cedula_cliente").val().length < 1 || $("#numdoc").val().length < 1 || $("#consecutivo").val().length < 1){
+		Swal.fire({
+		  title: 'Espera!',
+		  text: "Ningun campo debe estar vacio",
+		  icon: 'warning',
+		  showCancelButton: false,
+		  confirmButtonColor: '#3085d6',
+		  confirmButtonText: 'Entiendo'
+		})
+	}else{
+	 location.href = "http://localhost:6450/login/VentasServlet?accion=ingreso&cedula_cliente="+cedula+"&num="+num+"&numdoc="+numdoc+"&subtotal="+subtotal+"&iva="+iva+"&total="+total;
+	}
+	
 }

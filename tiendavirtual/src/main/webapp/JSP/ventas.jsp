@@ -16,7 +16,7 @@
 	if(session.getAttribute("nombre") == null && session.getAttribute("usuario") == null){
 		%>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed" onload="factura()">
+<body id="cuerpo" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <script>
 		Swal.fire({
 			  title: 'Espera!',
@@ -43,6 +43,30 @@
 				  confirmButtonText: 'Entiendo'
 				})
 				</script>
+		<%}else if(request.getAttribute("respuesta") == "excelente"){
+			%>
+			<script>
+			Swal.fire({
+				  title: 'Excelente',
+				  text: "La venta ha sido generada correctamente",
+				  icon: 'success',
+				  showCancelButton: false,
+				  confirmButtonColor: '#3085d6'
+				})
+				</script>
+	<%} else if(request.getAttribute("respuesta") == "error") {
+	%>
+	<script>
+			Swal.fire({
+				  title: 'Error!',
+				  text: "No se ha podido generar la venta",
+				  icon: 'error',
+				  showCancelButton: false,
+				  confirmButtonColor: '#3085d6',
+				  confirmButtonText: 'Entiendo'
+				})
+				</script>
+				
 		<%}
 	%>
 <div class="wrapper">
@@ -105,7 +129,7 @@
 	                      <%} %>
 	                      <div class="col-md-4">
 		                      <label for="consecutivo">Consecutivo</label>
-		                      <input type="text" class="form-control" id="consecutivo" name="consecutivo" value="" disabled>
+		                      <input type="text" class="form-control" id="consecutivo" name="consecutivo" value="<%=request.getAttribute("numFac") %>" disabled>
 	                      </div>
 	                      <div class="col-md-12">
 		                      <br><h4 class="m-0 text-center">Informacion Producto</h4><br>
@@ -119,6 +143,7 @@
 	                      </div>
 	                      
 	                      <div class="col-md-3">
+	                      	  <input type="hidden" id="numdoc" value="<%=request.getSession().getAttribute("numdoc")%>">
 		                      <label for="consecutivo">Nombre</label>
 		                      <input type="text" class="form-control" id="nom_producto" name="nom_producto" value="${productoTraer.getNombre_producto()}" disabled>
 	                      </div>
@@ -180,7 +205,7 @@
 								                <td style="text-align: center;"><%=venta.getValor_venta()%></td>
 								            </tr>
 								            <%} if(contador < 1){%>
-							            	<tr><td style="text-align: center;" colspan="6">No se han añadido productos a la venta</td></tr>
+							            	<tr><td style="text-align: center;" colspan="7">No se han añadido productos a la venta</td></tr>
 								            <%}
 								            }%>
 					        </tbody>
@@ -232,7 +257,7 @@
 			                  </div>
                 			</div>
                 			<div class="col-12">
-			                   <button class="btn btn-success float-right">Confirmar</button>
+			                   <button class="btn btn-success float-right" onclick="ingresarVenta();">Confirmar</button>
 			                   <button class="btn btn-danger float-right">Cancelar Venta</button>
                 			</div>
                       <!-- /.col -->

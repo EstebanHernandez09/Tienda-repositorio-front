@@ -30,42 +30,11 @@ public class VentasServlet extends HttpServlet {
     public VentasServlet() {
         super();
         // TODO Auto-generated constructor stub
-    }
-    
-    public void crearConsecutivo(HttpServletRequest request, HttpServletResponse response) 
-    		throws ServletException, IOException {
-    	int respuesta = 0;
-    	String val = "";
-    	String preloader = "preloader";
-    		Ventas venta = new Ventas();
-    		venta.setIvaventa(0);
-    		venta.setTotal_venta(0);
-    		venta.setValor_venta(0);
-    	try {
-    		respuesta = VentasJSON.postJSON(venta);
-    		if (respuesta == 200) {
-    			val = "excelente";
-				request.setAttribute("respuesta", val);
-				request.setAttribute("preloader", preloader);
-    			request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
-    			System.out.println("Cliente Agregado");
-    		} else {
-    			val = "error";
-				request.setAttribute("respuesta", val);
-				request.setAttribute("preloader", preloader);
-    			request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
-    			System.out.println("Cliente no Agregado");
-    		}
-    		
-    	}catch (IOException e){
-    		// TODO: handle exception
-    		e.printStackTrace();
-    	}
-    }
-    	
+    }	
     
     public void TraerCliente(HttpServletRequest request, HttpServletResponse response) {
     	Long id= Long.parseLong(request.getParameter("cedula_cliente"));
+    	Long num= Long.parseLong(request.getParameter("num"));
     	String val = "";
     	String preloader = "preloader";
 		try {
@@ -75,6 +44,7 @@ public class VentasServlet extends HttpServlet {
 				val = "clientetraido";
 			   request.setAttribute("traer", val);
 			   request.setAttribute("preloader", preloader);
+			   request.setAttribute("numFac", num);
 			   request.setAttribute("clienteTraer", clientes);
 			   
 			  request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);	
@@ -98,6 +68,7 @@ public class VentasServlet extends HttpServlet {
     	subtotal=Integer.parseInt(request.getParameter("subtotal"));
     	iva=Integer.parseInt(request.getParameter("iva"));
     	int total=Integer.parseInt(request.getParameter("total"));
+    	Long num= Long.parseLong(request.getParameter("num"));
     	String val = "";
     	String preloader = "preloader";
 		try {
@@ -116,6 +87,7 @@ public class VentasServlet extends HttpServlet {
 			   request.setAttribute("cliente", cliente);
 			   request.setAttribute("totalpagar", total);
 		    	request.setAttribute("totalsubtotal", subtotal);
+		    	request.setAttribute("numFac", num);
 		    	request.setAttribute("totaliva", iva);
 			   request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);	
 			}
@@ -131,13 +103,14 @@ public class VentasServlet extends HttpServlet {
 		 }
     }
     
-    public void factura(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void factura(HttpServletRequest request, HttpServletResponse response) {
     	try {
     		ArrayList<Ventas> lista = VentasJSON.getJSON();
     		int numFac= lista.size();
+    		numFac=numFac+1;
     		request.setAttribute("numFac", numFac);
-    		System.out.println(numFac);
-    		//request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
+    		//System.out.println(numFac);
+    		request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
     	} catch (Exception e){
     		e.printStackTrace();
     	}
@@ -149,6 +122,7 @@ public class VentasServlet extends HttpServlet {
 		String prenomprod = "";
     	acusubtotal = 0;
     	acuIva = 0;
+    	String preloader = "preloader";
     	lista_venta = new DetalleVentas(); 
     	Long cedula = Long.parseLong(request.getParameter("cedula_cliente"));
     	String cliente = request.getParameter("nombre_cliente");
@@ -157,6 +131,7 @@ public class VentasServlet extends HttpServlet {
     	valunitario=Integer.parseInt(request.getParameter("valor_unitario"));
     	cantidad=Integer.parseInt(request.getParameter("cantidad"));
     	iva=Integer.parseInt(request.getParameter("iva"));
+    	Long num= Long.parseLong(request.getParameter("num"));
     	
     	int valex = -1;
     	long subindice = 0,cont = 0;
@@ -220,9 +195,50 @@ public class VentasServlet extends HttpServlet {
     	request.setAttribute("totalpagar", totalpagar);
     	request.setAttribute("cedula", cedula);
 		request.setAttribute("cliente", cliente);
+		request.setAttribute("numFac", num);
+		request.setAttribute("preloader", preloader);
     	request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);	
     }
     
+    public void ingresoVenta(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    	int respuesta = 0;
+    	String val = "";
+    	String preloader = "preloader";
+    	Ventas venta = new Ventas();
+    	long cedula_cliente=Long.parseLong(request.getParameter("cedula_cliente"));
+    	long cedula_usuario=Long.parseLong(request.getParameter("numdoc"));
+    	long codigo_venta=Long.parseLong(request.getParameter("num"));
+    	double ivaventa=Double.parseDouble(request.getParameter("iva"));
+    	double totalventa=Double.parseDouble(request.getParameter("subtotal"));
+    	double valorventa=Double.parseDouble(request.getParameter("total"));
+    	
+    	venta.setCodigo_venta(codigo_venta);
+    	venta.setCedula_cliente(cedula_cliente);
+    	venta.setCodigo_venta(codigo_venta);
+    	venta.setIvaventa(ivaventa);
+    	venta.setTotal_venta(ivaventa);
+    	venta.setValor_venta(ivaventa);
+    	try {
+    		respuesta = VentasJSON.postJSON(venta);
+    		if (respuesta == 200) {
+    			val = "excelente";
+				request.setAttribute("respuesta", val);
+				request.setAttribute("preloader", preloader);
+    			request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
+    			System.out.println("Usuario Agregado");
+    		} else {
+    			val = "error";
+				request.setAttribute("respuesta", val);
+				request.setAttribute("preloader", preloader);
+    			request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
+    			System.out.println("Usuario no Agregado");
+    		}
+    		
+    	}catch (IOException e){
+    		// TODO: handle exception
+    		e.printStackTrace();
+    	}
+    }
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -237,6 +253,8 @@ public class VentasServlet extends HttpServlet {
 			this.agregarProducto(request, response);
 		}else if (accion.equals("factura")) {
 			this.factura(request, response);
+		}else if (accion.equals("ingreso")) {
+			this.ingresoVenta(request, response);
 		}
 	}
 

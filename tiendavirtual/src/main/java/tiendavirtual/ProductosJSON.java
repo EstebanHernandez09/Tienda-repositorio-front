@@ -150,6 +150,26 @@ public class ProductosJSON {
 			http.disconnect();
 			return respuesta;
 		}
+		
+		public static boolean validarCSV(String nombreArchivo) {
+			int contador = 0;
+	        char valdador;
+	        for (int i = 0; i < nombreArchivo.length(); i++) {
+	        	valdador = nombreArchivo.charAt(i);
+	            if (valdador == '.')
+	            	contador++;
+	        }
+	        
+	        if (contador<2) {
+	        	if(nombreArchivo.contains(".csv")) {
+	    			return true;
+	    		}else {
+	    			return false;
+	    		}
+	        }else{
+	        	return false;
+	        }
+		}
 
 
 }

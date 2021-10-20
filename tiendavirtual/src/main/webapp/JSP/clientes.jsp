@@ -168,14 +168,10 @@
 									<button class="btn btn-outline-success" data-toggle="modal" data-target="#modal_agregar_usuarios">Agregar cliente</button>
 								</div>
 								<div class="col-6"></div>
-								<div class="col-4">
-									<div class="input-group mb-3">
+								<div class="col-4 mb-3">
+									<div class="btn-group col-md-12">
                                     <input type="text" class="form-control" id="num_buscar_cli" placeholder="Buscar por numero de documento">
-                                    <div class="input-group-append">
-                                      <div class="input-group-text">
-                                        <span class="fas fa-search" onclick="buscarCliente();"></span>
-                                      </div>
-                                    </div>
+                                    <button type="button" class="btn btn-secondary" onclick="buscarCliente()"><i class="fas fa-search"></i></button>
                                   </div>
 								</div>
 							</div>

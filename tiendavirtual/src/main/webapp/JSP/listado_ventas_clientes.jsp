@@ -134,10 +134,7 @@
 							        </tbody>
 							    </table>
 							    <div class="row col-12 text-right">
-							    	<b>Total Ventas $</b>
-							    	<div class="col-3">
-							    		<input type="text" class="form-control form-control-sm" value="<%= valortotal %>">
-							    	</div>
+							    	<b>Total Ventas $ <%= valortotal %></b>
                   				</div>
                       </div>
                       <!-- /.col -->

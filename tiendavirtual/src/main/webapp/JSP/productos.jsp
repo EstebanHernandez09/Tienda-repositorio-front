@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
-<%@ page import='tiendavirtual.Usuarios' %>
+<%@ page import='tiendavirtual.Productos' %>
 <%@ page import='java.util.ArrayList' %>
 <html>
 <head>
@@ -9,9 +9,11 @@
 <title>Productos || Tienda Generica</title>
 <%@ include file="../template/head.jsp"%>
 </head>
-<body
-	class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-	<%
+<%if(request.getAttribute("traer") == "productotraido"){ %>
+	<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed" onload="modal_producto();">
+<%} else{%>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<%}
 	if (session.getAttribute("nombre") == null && session.getAttribute("usuario") == null) {
 	%>
 	<script>
@@ -28,15 +30,110 @@
 			</script>
 	<%
 	} else {
+		if(request.getAttribute("respuesta") == "excelente"){
+			%>
+			<script>
+			Swal.fire({
+				  title: 'Excelente',
+				  text: "El producto ha sido creado correctamente",
+				  icon: 'success',
+				  showCancelButton: false,
+				  confirmButtonColor: '#3085d6'
+				})
+				</script>
+	<%} else if(request.getAttribute("respuesta") == "error") {
 	%>
+	<script>
+			Swal.fire({
+				  title: 'Error!',
+				  text: "No se ha podido ingresar el producto",
+				  icon: 'error',
+				  showCancelButton: false,
+				  confirmButtonColor: '#3085d6',
+				  confirmButtonText: 'Entiendo'
+				})
+				</script>
+				
+		<%} else if(request.getAttribute("respuesta") == "vacioproductos") {%>
+			<script>
+			Swal.fire({
+				  title: 'Espera!',
+				  text: "No se puede dejar vacio ningun campo del formulario",
+				  icon: 'warning',
+				  showCancelButton: false,
+				  confirmButtonColor: '#3085d6',
+				  confirmButtonText: 'Entiendo'
+				})
+				</script>
+		
+		<%}	else if(request.getAttribute("respuesta") == "editado") {
+	%>
+	<script>
+			Swal.fire({
+				  title: 'Excelente!',
+				  text: "El producto ha sido editado correctamente",
+				  icon: 'success',
+				  showCancelButton: false,
+				  confirmButtonColor: '#3085d6',
+				  confirmButtonText: 'Entiendo'
+				})
+				</script>
+				
+		<%} else if(request.getAttribute("respuesta") == "errorEditado") {
+	%>
+			<script>
+				Swal.fire({
+					  title: 'Error!',
+					  text: "No se ha podido editar el producto",
+					  icon: 'error',
+					  showCancelButton: false,
+					  confirmButtonColor: '#3085d6',
+					  confirmButtonText: 'Entiendo'
+				})
+			</script>
+				
+		<%} else if(request.getAttribute("respuesta") == "vacioeditar") {%>
+			<script>
+			Swal.fire({
+				  title: 'Espera!',
+				  text: "No se puede dejar vacio ningun campo del formulario",
+				  icon: 'warning',
+				  showCancelButton: false,
+				  confirmButtonColor: '#3085d6',
+				  confirmButtonText: 'Entiendo'
+				})
+				</script>
+		  <%} else if(request.getAttribute("respuesta") == "eliminado") {%>
+		}
+			<script>
+				Swal.fire({
+					  title: 'Excelente!',
+					  text: "El producto se ha eliminado correctamente",
+					  icon: 'success',
+					  showCancelButton: false,
+					  confirmButtonColor: '#3085d6',
+					  confirmButtonText: 'Entiendo'
+				})
+			</script>
+		<%} else if(request.getAttribute("respuesta") == "errorEliminado") {%>
+			<script>
+				Swal.fire({
+					  title: 'Error!',
+					  text: "No se ha podido eliminado el producto",
+					  icon: 'error',
+					  showCancelButton: false,
+					  confirmButtonColor: '#3085d6',
+					  confirmButtonText: 'Entiendo'
+				})
+			</script>
+		<%}%>
 	<div class="wrapper">
 		<!-- Preloader -->
-		<div
-			class="preloader flex-column justify-content-center align-items-center">
-			<img class="animation__wobble"
-				src="${pageContext.request.contextPath}/img/logo-carro.png"
-				alt="Logo_tienda" height="60" width="60">
-		</div>
+		<%if(request.getAttribute("preloader") == null) {%>
+      	<div class="preloader flex-column justify-content-center align-items-center">
+        	<img class="animation__wobble" src="${pageContext.request.contextPath}/img/logo-carro.png" alt="Logo_tienda" height="60" width="60">
+        </div>
+      <%} %>
 		<%@ include file="../template/menu-horizontal.jsp"%>
 		<%@ include file="../template/menu-vertical.jsp"%>
 		<div class="content-wrapper">
@@ -65,17 +162,13 @@
                         	<div class="table-responsive">
 							<div class="row">
 								<div class="col-2">
-									<button class="btn btn-outline-success" data-toggle="modal" data-target="#modal_agregar_usuarios">Agregar Producto</button>
+									<button class="btn btn-outline-success" data-toggle="modal" data-target="#modal_agregar_producto">Agregar Producto</button>
 								</div>
 								<div class="col-6"></div>
-								<div class="col-4">
-									<div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="num_buscar_usu" name="num_buscar_usu" placeholder="Buscar por codigo de producto">
-                                    <div class="input-group-append">
-                                      <div class="input-group-text">
-                                        <span class="fas fa-search" onclick="buscarUsuario()"></span>
-                                      </div>
-                                    </div>
+								<div class="col-4 mb-3">
+								  <div class="btn-group col-md-12">
+                                    <input type="text" class="form-control" id="num_buscar_pro" name="num_buscar_pro" placeholder="Buscar por codigo de producto">
+                                    <button type="button" class="btn btn-secondary" onclick="buscarProducto()"><i class="fas fa-search"></i></button>
                                   </div>
 								</div>
 							</div>
@@ -89,10 +182,58 @@
 							                <th class="text-center">PRECIO COMPRA</th>
 							                <th class="text-center">IVA</th>
 							                <th class="text-center">PRECIO VENTA</th>
+							                <th class="text-center">ACCIONES</th>
 							            </tr>
 							        </thead>
 							        <tbody>
-							        
+							        <%
+							        if(request.getAttribute("buscar") == "busca"){
+							        	Long id= Long.parseLong(request.getParameter("id"));
+							        	int contador = 0;
+							        	ArrayList<Productos> lista = (ArrayList<Productos>) request.getAttribute("lista");
+							        	for (Productos producto:lista){
+								        	if (producto.getCodigo_producto()==id) {
+								        		contador = contador + 1;
+								        		%>
+								        	<tr>
+								                <td style="text-align: center;"><%=producto.getCodigo_producto()%></td>
+								                <td style="text-align: center;"><%=producto.getNombre_producto()%></td>
+								                <td style="text-align: center;"><%=producto.getNitproveedor()%></td>
+								                <td style="text-align: center;"><%=producto.getPrecio_compra()%></td>
+								                <td style="text-align: center;"><%=producto.getIvacompra()%></td>
+								                <td style="text-align: center;"><%=producto.getPrecio_venta()%></td>
+								                <td style="text-align: center;"><div class="row" style="margin:auto;"><button class="btn btn-outline-success" id="<%=producto.getCodigo_producto()%>" onclick="mostrar_producto(this);"><i class="fas fa-edit"></i></button>
+								                <button class="btn btn-outline-danger" id="<%=producto.getCodigo_producto()%>" onclick="elim_producto(this);"> <i class="far fa-trash-alt"></i></button>
+								                </div></td>
+								            </tr>
+								        		<%
+								        	}
+							        	}
+							        	if(contador == 0){%>
+						        		<tr><td style="text-align: center;" colspan="6">No se han encontrado productos con ese codigo</td></tr>
+						        	<% }
+							        }else{
+							        	ArrayList<Productos> lista = (ArrayList<Productos>) request.getAttribute("lista");
+							        	int contador = 0;
+								        for (Productos producto : lista) {
+								        	contador++;
+								        %>
+								            <tr>
+								                <td style="text-align: center;"><%=producto.getCodigo_producto()%></td>
+								                <td style="text-align: center;"><%=producto.getNombre_producto()%></td>
+								                <td style="text-align: center;"><%=producto.getNitproveedor()%></td>
+								                <td style="text-align: center;"><%=producto.getPrecio_compra()%></td>
+								                <td style="text-align: center;"><%=producto.getIvacompra()%></td>
+								                <td style="text-align: center;"><%=producto.getPrecio_venta()%></td>
+								                <td style="text-align: center;"><div class="row" style="margin:auto;"><button class="btn btn-outline-success" id="<%=producto.getCodigo_producto()%>" onclick="mostrar_producto(this);"><i class="fas fa-edit"></i></button>
+								                <button class="btn btn-outline-danger" id="<%=producto.getCodigo_producto()%>" onclick="elim_producto(this);"> <i class="far fa-trash-alt"></i></button>
+								                </div></td>
+								            </tr>
+								            <%} if(contador < 1){%>
+							            	<tr><td style="text-align: center;" colspan="6">No se han encontrado productos</td></tr>
+								            <%}
+							        }
+							        %>
 							            <tfoot>
 							                <tr style="background: #3F6791; color:#fff;">
 							                    <th class="text-center">CODIGO</th>
@@ -101,6 +242,7 @@
 							                <th class="text-center">PRECIO COMPRA</th>
 							                <th class="text-center">IVA</th>
 							                <th class="text-center">PRECIO VENTA</th>
+							                <th class="text-center">ACCIONES</th>
 							                </tr>
 							            </tfoot>
 							        </tbody>
@@ -108,7 +250,7 @@
 							</div>
                         </div>
                         <!-- Modal agregar usuario-->
-                        <div class="modal fade" id="modal_agregar_usuarios" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal fade" id="modal_agregar_producto" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content card card-outline card-primary">
                               <div class="modal-body card-body">
@@ -128,7 +270,7 @@
                                     <input type="number" class="form-control" id="cod_producto" name="cod_producto" placeholder="Codigo de producto">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
-                                        <span class="fas fa-address-card"></span>
+                                        <span class="fas fa-barcode"></span>
                                       </div>
                                     </div>
                                   </div>
@@ -136,31 +278,39 @@
                                     <input type="text" class="form-control" id="nom_agre_pro" name="nom_agre_pro" placeholder="Nombre">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
-                                        <span class="fas fa-user"></span>
+                                        <span class="fas fa-file-signature"></span>
                                       </div>
                                     </div>
                                   </div>
                                   <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="email_agre_usu" name="email_agre_usu" placeholder="Correo electronico">
+                                    <input type="text" class="form-control" id="nit_agre_pro" name="nit_agre_pro" placeholder="Nit proveedor">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
-                                        <span class="fas fa-envelope"></span>
+                                        <span class="fas fa-address-card"></span>
                                       </div>
                                     </div>
                                   </div>
                                   <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="us_agre_usu" name="us_agre_usu" placeholder="Usuario">
+                                    <input type="text" class="form-control" id="iva_agre_pro" name="iva_agre_pro" placeholder="IVA de compra">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
-                                        <span class="fas fa-user"></span>
+                                        <span class="fas fa-percent"></span>
                                       </div>
                                     </div>
                                   </div>
                                   <div class="input-group mb-3">
-                                    <input type="password" class="form-control" id="pass_agre_usu" name="pass_agre_usu" placeholder="Contraseña">
+                                    <input type="text" class="form-control" id="compra_agre_usu" name="compra_agre_usu" placeholder="Precio de compra">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
-                                        <span class="fas fa-lock"></span>
+                                        <span class="far fa-money-bill-alt"></span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="venta_agre_usu" name="venta_agre_usu" placeholder="Precio de venta">
+                                    <div class="input-group-append">
+                                      <div class="input-group-text">
+                                        <span class="fas fa-hand-holding-usd"></span>
                                       </div>
                                     </div>
                                   </div>
@@ -183,7 +333,7 @@
                           </div>
                         </div>
                         <!-- Modal editar usuario-->
-                        <div class="modal fade" id="modal_editar_usuarios" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal fade" id="modal_editar_producto" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-centered" role="document">
                             <div class="modal-content card card-outline card-primary">
                               <div class="modal-body card-body">
@@ -198,9 +348,25 @@
                                 </div>
                                 </div>
                                 <p class="login-box-msg">Formulario de edicion de productos</p>
-                                <form method="POST" action="${pageContext.request.contextPath}/UsuariosServlet">
+                                <form method="POST" action="${pageContext.request.contextPath}/ProductosServlet">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="numdoc_edit_usu" name="numdoc_edit_usu" placeholder="Numero de documento" value="${usuarioTraer.getCedula_usuario()}">
+                                    <input type="number" class="form-control" id="cod_producto" name="cod_producto" placeholder="Codigo de producto" value="${productoTraer.getCodigo_producto()}">
+                                    <div class="input-group-append">
+                                      <div class="input-group-text">
+                                        <span class="fas fa-barcode"></span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="nom_edit_pro" name="nom_edit_pro" placeholder="Nombre" value="${productoTraer.getNombre_producto()}">
+                                    <div class="input-group-append">
+                                      <div class="input-group-text">
+                                        <span class="fas fa-file-signature"></span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="nit_edit_pro" name="nit_edit_pro" placeholder="Nit proveedor" value="${productoTraer.getNitproveedor()}">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
                                         <span class="fas fa-address-card"></span>
@@ -208,38 +374,30 @@
                                     </div>
                                   </div>
                                   <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="nom_edit_usu" name="nom_edit_usu" placeholder="Nombre completo" value="${usuarioTraer.getNombre_usuario()}">
+                                    <input type="text" class="form-control" id="iva_edit_pro" name="iva_edit_pro" placeholder="IVA de compra" value="${productoTraer.getIvacompra()}">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
-                                        <span class="fas fa-user"></span>
+                                        <span class="fas fa-percent"></span>
                                       </div>
                                     </div>
                                   </div>
                                   <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="email_edit_usu" name="email_edit_usu" placeholder="Correo electronico" value="${usuarioTraer.getEmail_usuario()}">
+                                    <input type="text" class="form-control" id="compra_edit_usu" name="compra_edit_usu" placeholder="Precio de compra" value="${productoTraer.getPrecio_compra()}">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
-                                        <span class="fas fa-envelope"></span>
+                                        <span class="far fa-money-bill-alt"></span>
                                       </div>
                                     </div>
                                   </div>
                                   <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="us_edit_usu" name="us_edit_usu" placeholder="Usuario" value="${usuarioTraer.getUsuario()}">
+                                    <input type="text" class="form-control" id="venta_edit_usu" name="venta_edit_usu" placeholder="Precio de venta" value="${productoTraer.getPrecio_venta()}">
                                     <div class="input-group-append">
                                       <div class="input-group-text">
-                                        <span class="fas fa-user"></span>
+                                        <span class="fas fa-hand-holding-usd"></span>
                                       </div>
                                     </div>
                                   </div>
-                                  <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="pass_edit_usu" name="pass_edit_usu" placeholder="Contraseña" value="${usuarioTraer.getPassword()}">
-                                    <div class="input-group-append">
-                                      <div class="input-group-text">
-                                        <span class="fas fa-lock"></span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                <div class="row">
+                                  <div class="row">
                                     <!-- /.col -->
                                     <div class="col-4 mb-0">
                                       <button type="button" class="btn btn-danger btn-block" data-dismiss="modal" >Cerrar</button>
@@ -303,12 +461,23 @@
 										<div class="divider">
 											<br>
 										</div>
+										
+										<form method="post" name="formulario" enctype="multipart/form-data">
+											<div class="row">
+												<div class="col-11">
+													<input type="file" name="archivo" class="form-control" id="archivo" >
+												</div>
+												<input type="text" name="nombre" value="">
+												<div class="col-1">
+													<input type="submit" value="Procesar" name="Procesar"  class="btn btn-success aling-center" onclick="cargarArchivo(archivo)">
+												</div>
+											</div>
+										</form>
+										
+										
+								<!-- 	<form method="post" name="formulario" enctype="multipart/form-data">
 										<div class="row form-group">
-											<input type="file" id="file" name="jetperu[archivo]"
-												style="margin: auto;" accept=".txt" class="filestyle"
-												data-buttonText="Seleccione archivo"
-												data-buttonText="Seleccione archivo .txt"
-												onchange="return validarExt()">
+											<input type="file" name="archivo" id="archivo" style="margin: auto;" accept=".csv" class="filestyle" data-buttonText="Seleccione archivo" data-buttonText="Seleccione archivo .csv">
 										</div>
 									</div>
 								</div>
@@ -316,38 +485,13 @@
 								<div class="row">
 									<div class="text-center" style="margin: auto;">
 										<br>
-										<div id="boton">
-											<a href="#!" id="enviar" class="btn btn-primary"
-												data-toggle="modal" data-target="#modalEnvio">Enviar</a>
-										</div>
+										<input type="submit" value="Procesar" name="Procesar" onclick="cargarArchivo(archivo)" class="btn btn-success aling-center">
 									</div>
 								</div>
+								<input type="hidden" name="nombre" value="">
+								<input type="hidden" name="nombre2" value="">
+								</form> -->	
 								<br>
-								<div class="modal fade" id="modalEnvio" data-backdrop="static"
-									data-keyboard="false" tabindex="-1" role="dialog"
-									aria-labelledby="exampleModalLabel" aria-hidden="true">
-									<div
-										class="modal-dialog modal-dialog-scrollable modal-dialog-centered "
-										role="document">
-										<div class="modal-content">
-											<div class="modal-header">
-												<h5 class="modal-title" id="exampleModalLabel">Confirmacion
-													de Envio Archivo Plano a venegiros</h5>
-											</div>
-											<div class="modal-body">
-												<form method="post" id="resultado" class="form-group">
-													<div class="form-group">
-														<label for="recipient-name" class="col-form-label"></label>
-													</div>
-												</form>
-											</div>
-											<div class="modal-footer">
-												<button type="button" class="btn btn-primary"
-													data-dismiss="modal" id="btn_revisado">Revisado</button>
-											</div>
-										</div>
-									</div>
-								</div>
 
 							</div>
 						</div>

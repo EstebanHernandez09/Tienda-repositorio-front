@@ -50,7 +50,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="${pageContext.request.contextPath}/JSP/productos.jsp" class="nav-link">
+                <a href="http://localhost:6450/login/ProductosServlet?accion=Listar" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Productos</p>
                 </a>

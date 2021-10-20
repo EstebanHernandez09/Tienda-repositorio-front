@@ -2,6 +2,17 @@
  * 
  */
 
+
+function cargarArchivo(elemento){
+	var file = elemento.files[0];
+	var objHidden = document.formulario.nombre;
+	objHidden.value = file.name;
+	document.formulario.action = "CargarArchivo";
+	document.formulario.submit();
+	//alert("se proceso");
+}
+
+
 function ver_contra(checkbox){
 	
  var password = document.getElementById("contrasena");
@@ -289,4 +300,51 @@ function ingresarVenta(){
 	 location.href = "http://localhost:6450/login/VentasServlet?accion=ingreso&cedula_cliente="+cedula+"&num="+num+"&numdoc="+numdoc+"&subtotal="+subtotal+"&iva="+iva+"&total="+total;
 	}
 	
+}
+
+//---------------------productos-------------
+function elim_producto(btn){
+	var id = btn.id;
+	id = parseInt(id);
+    	Swal.fire({
+              html: '¿Estas seguro de eliminar este producto?',
+              text: "Tenga en cuenta que esta accion es irreversible!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Si, Eliminar!',
+              cancelButtonText: 'Cancelar'
+            }).then((result) => {
+              if (result.isConfirmed) {
+      			location.href = "http://localhost:6450/login/ProductosServlet?accion=Eliminar&id="+id;
+              }
+            })
+    
+  }
+function mostrar_producto(btn){
+	var id = btn.id;
+	id = parseInt(id);
+	//alert(id);
+	location.href = "http://localhost:6450/login/ProductosServlet?accion=Traer&id="+id;
+}
+function modal_producto(){
+	$('#modal_editar_producto').modal('show');
+}
+function buscarProducto(){
+	var id = document.getElementById("num_buscar_pro").value;
+	id = parseInt(id);
+	if($("#num_buscar_pro").val().length < 1){
+		Swal.fire({
+				  title: 'Espera!',
+				  text: "Debe digitar almenos un numero para empezar la busqueda del producto",
+				  icon: 'warning',
+				  showCancelButton: false,
+				  confirmButtonColor: '#3085d6',
+				  confirmButtonText: 'Entiendo'
+				})
+	}else{
+	//alert(id);
+		location.href = "http://localhost:6450/login/ProductosServlet?accion=buscar&id="+id;
+	}
 }

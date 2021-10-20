@@ -97,8 +97,7 @@
               <div class="col-md-12">
                 <div class="card">
                   <div class="card-body">
-                  		<!-- <form method="get" action="${pageContext.request.contextPath}/VentasServlet"> -->
-                  	<div class="row">
+                		   	<div class="row">
                      <div class="col-md-12">
 	                      <br><h4 class="m-0 text-center">Informacion Cliente</h4><br>
                       </div>
@@ -166,8 +165,6 @@
 		                      <button class="btn btn-success" onclick="agregar_producto()"><i class="far fa-plus-square"></i></button>
 	                      </div>
 	                      </div>
-	                      
-                       <!--</form>-->
                       
                       <div class="col-md-12">
 	                      <br><h4 class="m-0 text-center">Lista de productos</h4><br>
@@ -235,7 +232,6 @@
 			                        <th>Total IVA:</th>
 			                        <td id="totaliva">$ <%=request.getAttribute("totaliva") %></td>
 			                      </tr>
-			                      <tr>
 			                      <%}else{%>
 		                    	  <tr>
 			                        <th>Total IVA:</th>

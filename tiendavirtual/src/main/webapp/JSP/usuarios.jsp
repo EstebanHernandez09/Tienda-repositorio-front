@@ -170,18 +170,13 @@
 									<button class="btn btn-outline-success" data-toggle="modal" data-target="#modal_agregar_usuarios">Agregar Usuario</button>
 								</div>
 								<div class="col-6"></div>
-								<div class="col-4">
-									<div class="input-group mb-3">
+								<div class="col-4 mb-3">
+									<div class="btn-group col-md-12">
                                     <input type="text" class="form-control" id="num_buscar_usu" name="num_buscar_usu" placeholder="Buscar por numero de documento">
-                                    <div class="input-group-append">
-                                      <div class="input-group-text">
-                                        <span class="fas fa-search" onclick="buscarUsuario()"></span>
-                                      </div>
-                                    </div>
+                                    <button type="button" class="btn btn-secondary" onclick="buscarUsuario()"><i class="fas fa-search"></i></button>
                                   </div>
 								</div>
 							</div>
-							
 							<table id="tabla_usuarios" class="table display table-striped table-bordered compact" style="width:100%">
 							        <thead class="text-capitalize ">
 							            <tr style="background: #3F6791; color: #fff;">

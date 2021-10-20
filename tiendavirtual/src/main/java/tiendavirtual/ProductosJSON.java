@@ -2,8 +2,11 @@ package tiendavirtual;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -16,7 +19,7 @@ public class ProductosJSON {
 	private static URL url;
 	private static String sitio = "http://localhost:8585/";
 	
-	//agregar informacion a la tabla clientes
+	//agregar informacion a la tabla productos
 	
 		public static ArrayList<Productos> parsingProductos(String json) throws ParseException {//devuelve un arraylist
 			JSONParser jsonParser = new JSONParser();
@@ -58,5 +61,95 @@ public class ProductosJSON {
 			http.disconnect();
 			return lista;
 		}
+		
+		
+		public static int postJSON(Productos producto) throws IOException {
+
+			url = new URL(sitio + "productos/guardar");
+			HttpURLConnection http;
+			http = (HttpURLConnection) url.openConnection();
+
+			try {
+				http.setRequestMethod("POST");
+			} catch (ProtocolException e) {
+				e.printStackTrace();
+			}
+
+			http.setDoOutput(true);
+			http.setRequestProperty("Accept", "application/json");
+			http.setRequestProperty("Content-Type", "application/json");
+
+			String data = "{" + "\"codigo_producto\":\"" + String.valueOf(producto.getCodigo_producto())
+					+ "\",\"ivacompra\": \"" + producto.getIvacompra() 
+					+ "\",\"nitproveedor\": \"" + producto.getNitproveedor()
+					+ "\",\"nombre_producto\":\"" + producto.getNombre_producto()
+					+ "\",\"precio_compra\":\"" + producto.getPrecio_compra()
+					+ "\",\"precio_venta\":\"" + producto.getPrecio_venta() + "\"}";
+			
+			byte[] out = data.getBytes(StandardCharsets.UTF_8);
+			OutputStream stream = http.getOutputStream();
+			stream.write(out);
+
+			int respuesta = http.getResponseCode();
+			http.disconnect();
+			return respuesta;
+		}
+		
+	public static int putJSON(Productos producto, Long id) throws IOException {
+			
+			
+			url = new URL(sitio+"productos/actualizar");
+			HttpURLConnection http;
+			http = (HttpURLConnection)url.openConnection();
+			
+			try {
+			  http.setRequestMethod("PUT");
+			} catch (ProtocolException e) {
+			  e.printStackTrace();
+			}
+			
+			http.setDoOutput(true);
+			http.setRequestProperty("Accept", "application/json");
+			http.setRequestProperty("Content-Type", "application/json");
+			
+			String data = "{" + "\"codigo_producto\":\"" + id
+							+ "\",\"ivacompra\": \"" + producto.getIvacompra() 
+							+ "\",\"nitproveedor\": \"" + producto.getNitproveedor()
+							+ "\",\"nombre_producto\":\"" + producto.getNombre_producto()
+							+ "\",\"precio_compra\":\"" + producto.getPrecio_compra()
+							+ "\",\"precio_venta\":\"" + producto.getPrecio_venta() + "\"}";
+			byte[] out = data.getBytes(StandardCharsets.UTF_8);
+			OutputStream stream = http.getOutputStream();
+			stream.write(out);
+			
+			int respuesta = http.getResponseCode();
+			http.disconnect();
+			return respuesta;
+		}
+
+
+		public static int deleteJSON(Long id) throws IOException {
+			
+			
+			url = new URL(sitio+"productos/eliminar/" + id);
+			HttpURLConnection http;
+			http = (HttpURLConnection)url.openConnection();
+			
+			try {
+			  http.setRequestMethod("DELETE");
+			} catch (ProtocolException e) {
+			  e.printStackTrace();
+			}
+			
+			http.setDoOutput(true);
+			http.setRequestProperty("Accept", "application/json");
+			http.setRequestProperty("Content-Type", "application/json");
+			
+			
+			int respuesta = http.getResponseCode();
+			http.disconnect();
+			return respuesta;
+		}
+
 
 }

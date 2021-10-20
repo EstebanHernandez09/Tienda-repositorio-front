@@ -45,7 +45,15 @@ public class ReportesServlet extends HttpServlet {
     }
 
 	 void ListarVentasCliente(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-    	
+	    	try {
+	    		ArrayList<Clientes> lista = ClientesJSON.getJSON();
+	    		request.setAttribute("lista", lista);
+	    		ArrayList<Ventas> listaventas = VentasJSON.getJSON();
+	    		request.setAttribute("listaventas", listaventas);
+	    		request.getRequestDispatcher("/JSP/listado_ventas_clientes.jsp").forward(request, response);
+	    	} catch (Exception e){
+	    		e.printStackTrace();
+	    	}
     }
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)

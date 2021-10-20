@@ -1,6 +1,7 @@
 package tiendavirtual;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
@@ -30,15 +31,36 @@ public class DetalleVentasJSON {
 			DetalleVentas detalle = new DetalleVentas();
 			detalle.setCodigo_detalle_venta(Long.parseLong(innerObj.get("codigo_detalle_venta").toString()));
 			detalle.setCantidad_producto(Integer.parseInt(innerObj.get("cantidad_producto").toString()));
-			detalle.setNombre_producto(innerObj.get("nombre_producto").toString());
 			detalle.setCodigo_producto(Long.parseLong(innerObj.get("codigo_producto").toString()));
 			detalle.setCodigo_venta(Long.parseLong(innerObj.get("codigo_venta").toString())); 
 			detalle.setValor_total(Double.parseDouble(innerObj.get("valor_total").toString())); 
 			detalle.setValor_venta(Double.parseDouble(innerObj.get("valor_venta").toString())); 
 			detalle.setValoriva(Double.parseDouble(innerObj.get("valoriva").toString()));
-			detalle.setValor_unitario(Long.parseLong(innerObj.get("valor_unitario").toString()));
 			lista.add(detalle);
 		}
+		return lista;
+	}
+	
+	//listar la informacion
+	public static ArrayList<DetalleVentas> getJSON() throws IOException, ParseException { //devolver un listado JSON
+
+		url = new URL(sitio + "detalleventas/listar"); //trae el metodo de DetalleVentas.API 
+		HttpURLConnection http = (HttpURLConnection) url.openConnection();
+
+		http.setRequestMethod("GET");
+		http.setRequestProperty("Accept", "application/json");
+
+		InputStream respuesta = http.getInputStream();
+		byte[] inp = respuesta.readAllBytes();
+		String json = "";
+
+		for (int i = 0; i < inp.length; i++) {
+			json += (char) inp[i];
+		}
+
+		ArrayList<DetalleVentas> lista = new ArrayList<DetalleVentas>();
+		lista = parsingDetalleVentas(json);
+		http.disconnect();
 		return lista;
 	}
 	

@@ -2,6 +2,7 @@ package tiendavirtual;
 
 import java.io.IOException;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 /**
  * Servlet implementation class VentasServlet
  */
@@ -46,13 +46,14 @@ public class VentasServlet extends HttpServlet {
 			   request.setAttribute("preloader", preloader);
 			   request.setAttribute("numFac", num);
 			   request.setAttribute("clienteTraer", clientes);
-			   
-			  request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);	
+			  request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);	
 			}
 		   }
 		   if(val == "") {
-			   val = "noExiste";
+			   val = "noexiste";
 			   request.setAttribute("traer", val);
+			   //System.out.println(val);
+			   request.setAttribute("numFac", num);
 			   request.setAttribute("preloader", preloader);
 			   request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
 		   }
@@ -89,14 +90,14 @@ public class VentasServlet extends HttpServlet {
 		    	request.setAttribute("totalsubtotal", subtotal);
 		    	request.setAttribute("numFac", num);
 		    	request.setAttribute("totaliva", iva);
-			   request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);	
+			   request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);	
 			}
 		   }
 		   if(val == "") {
 			   val = "noExiste";
 			   request.setAttribute("traer", val);
 			   request.setAttribute("preloader", preloader);
-			   request.getRequestDispatcher("/JSP/ventas.jsp").forward(request, response);
+			   request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);
 		   }
 		 } catch (Exception e) {
 	       	e.printStackTrace();
@@ -224,7 +225,8 @@ public class VentasServlet extends HttpServlet {
     			val = "excelente";
 				request.setAttribute("respuesta", val);
 				request.setAttribute("preloader", preloader);
-    			request.getRequestDispatcher("/VentasServlet?accion=factura&cod="+codigo_venta).forward(request, response);
+				response.sendRedirect("http://localhost:6450/login/VentasServlet?accion=detalle&cod="+codigo_venta);
+    			//request.getRequestDispatcher("/VentasServlet?accion=detalle&cod="+codigo_venta).forward(request, response);
     			System.out.println("venta Agregada");
     		} else {
     			val = "error";
@@ -247,52 +249,59 @@ public class VentasServlet extends HttpServlet {
     	String preloader = "preloader";
     	double unitario = 0.0, totalpagar = 0.0, iva = 0.0, subtotal = 0.0;
 		long codproducto = 0;
+		long subindice = 0,cont = 0;
 		long cod_venta =Long.parseLong(request.getParameter("cod"));
     	lista_venta = new DetalleVentas(); 
     	DetalleVentas detalleventa = new DetalleVentas();
-    	
-    	long subindice = 0,cont = 0;
-    	for(int i=0; i<listaVentas.size();i++) {
-			subindice = cont;
-			unitario = listaVentas.get(i).getValor_unitario();
-			totalpagar = listaVentas.get(i).getValor_total();
-			codproducto = listaVentas.get(i).getCodigo_producto();
-			cantidad = listaVentas.get(i).getCantidad_producto();
-			iva = listaVentas.get(i).getValoriva();
-			subtotal = listaVentas.get(i).getValor_venta();
-			//System.out.println("existe");
-			cont++;
-			totalpagar = totalpagar+iva;
-			detalleventa.setCodigo_detalle_venta(subindice);
-			detalleventa.setCantidad_producto(cantidad);
-			detalleventa.setCodigo_producto(codproducto);
-			detalleventa.setCodigo_venta(cod_venta);
-			detalleventa.setValor_total(totalpagar);
-			detalleventa.setValor_venta(unitario);
-			detalleventa.setValoriva(iva);
-			
-			try {
-	    		respuesta = DetalleVentasJSON.postJSON(detalleventa);
-	    		if (respuesta == 200) {
-	    			val = "excelente";
-					request.setAttribute("respuesta", val);
-					request.setAttribute("preloader", preloader);
-	    			request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);
-	    			System.out.println("venta Agregada");
-	    		} else {
-	    			val = "error";
-					request.setAttribute("respuesta", val);
-					request.setAttribute("preloader", preloader);
-	    			request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);
-	    			System.out.println("Venta no Agregada");
-	    			System.out.println(respuesta);
-	    		}
-	    		
-	    	}catch (IOException e){
-	    		// TODO: handle exception
-	    		e.printStackTrace();
-	    	}
-    	}	
+   
+    	try {
+    		ArrayList<DetalleVentas> lista = DetalleVentasJSON.getJSON();
+    		subindice = lista.size();
+        	for(int i=0; i<listaVentas.size();i++) {
+    			
+    			unitario = listaVentas.get(i).getValor_unitario();
+    			codproducto = listaVentas.get(i).getCodigo_producto();
+    			cantidad = listaVentas.get(i).getCantidad_producto();
+    			iva = listaVentas.get(i).getValoriva();
+    			subtotal = listaVentas.get(i).getValor_venta();
+    			//System.out.println("existe");
+    			subtotal = subtotal + iva;
+    			subindice++;
+    			detalleventa.setCodigo_detalle_venta(subindice);
+    			detalleventa.setCantidad_producto(cantidad);
+    			detalleventa.setCodigo_producto(codproducto);
+    			detalleventa.setCodigo_venta(cod_venta);
+    			detalleventa.setValor_total(subtotal);
+    			detalleventa.setValor_venta(unitario);
+    			detalleventa.setValoriva(iva);
+    			
+    			try {
+    	    		respuesta = DetalleVentasJSON.postJSON(detalleventa);
+    	    		System.out.println(" detalle venta Agregada");
+    	    		
+    	    	}catch (IOException e){
+    	    		// TODO: handle exception
+    	    		e.printStackTrace();
+    	    	}
+        	}
+        	
+        	if (respuesta == 200) {
+    			val = "excelente";
+				request.setAttribute("respuesta", val);
+				request.setAttribute("preloader", preloader);
+    			request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);
+    			System.out.println("detalle venta Agregada");
+    		} else {
+    			val = "error";
+				request.setAttribute("respuesta", val);
+				request.setAttribute("preloader", preloader);
+				//request.getRequestDispatcher("/VentasServlet?accion=factura").forward(request, response);
+    			System.out.println("detalle Venta no Agregada");
+    			System.out.println(respuesta);
+    		}
+    	} catch (Exception e){
+    		e.printStackTrace();
+    	}
     }
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)

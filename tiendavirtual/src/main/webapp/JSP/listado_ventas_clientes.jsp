@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
+<%@ page import='tiendavirtual.Ventas' %>
+<%@ page import='tiendavirtual.Clientes' %>
+<%@ page import='java.util.ArrayList' %>
 <html>
 <head>
 <meta charset="ISO-8859-1">
@@ -64,11 +67,63 @@
 							            </tr>
 							        </thead>
 							        <tbody>
-							            <tr>
-							                <td style="text-align: center;">Juan Esteban Gomez Hernandez</td>
-							                <td style="text-align: center;">1000273466</td>
-							                <td style="text-align: center;">eh127337@gmail.com</td>
-							            </tr>
+							            <%
+							            ArrayList<Clientes> lista = (ArrayList<Clientes>) request.getAttribute("lista");
+							            ArrayList<Ventas> listaventas = (ArrayList<Ventas>) request.getAttribute("listaventas");
+							            int cont = 0;
+							       		int contador = 0;
+							       		long  almacedula = 0;
+							       	 	double almacenador=0, valor = 0, valortotal = 0, subalmacenador = 0;
+								        for (Clientes cliente: lista) {
+								        	contador++;
+								        	cont=0;
+								        	
+								        %>
+								            <tr>
+								                 <td style="text-align: center;"><%=cliente.getCedula_cliente() %></td>
+								                 <td style="text-align: center;"><%=cliente.getNombre_cliente() %></td>
+								                 <%for (Ventas venta:listaventas){
+								                	 
+								                	 
+								                	 if(cliente.getCedula_cliente() == venta.getCedula_cliente()){    
+								                		 cont++;
+								                		
+								                		 
+								                	 if(almacedula == cliente.getCedula_cliente()){%>
+								                		
+								                		 <%
+								                		 valor = venta.getValor_venta()+almacenador;%>
+								                		 <%
+								                	 }else{%>
+								                	 	<%
+								                	 	
+								                		 valor = venta.getValor_venta();%>
+								                		<%
+								                	 }
+								                	 almacenador = valor;
+								                	 almacedula = cliente.getCedula_cliente();
+								                	 subalmacenador = venta.getValor_venta();
+								                	 if(valortotal == 0){
+							                			 valortotal = venta.getValor_venta();
+							                		 }else{
+							                			 valortotal = valortotal+subalmacenador;
+							                		 }
+								                	 }
+								                	 } if(cont >= 1){%>
+								                 
+										                 <td style="text-align: center;"> 
+										                 	$ <%=valor %>
+										                 </td>
+								                 	<%}else{ %>
+								                 		<td style="text-align: center;"> 
+										                 	$ 0
+										                 </td>
+								                 	<%} %>
+								               							           
+								            </tr>
+								            <%}if(contador < 1){%>
+								            	<tr><td style="text-align: center;" colspan="3">No se han encontrado clientes</td></tr>
+								            <%} %>
 							            <tfoot>
 							                <tr style="background: #3F6791; color: #fff;">
 							                    <th class="text-center">NUMERO DOCUMENTO</th>
@@ -81,7 +136,7 @@
 							    <div class="row col-12 text-right">
 							    	<b>Total Ventas $</b>
 							    	<div class="col-3">
-							    		<input type="text" class="form-control form-control-sm">
+							    		<input type="text" class="form-control form-control-sm" value="<%= valortotal %>">
 							    	</div>
                   				</div>
                       </div>

@@ -16,7 +16,7 @@
 	if(session.getAttribute("nombre") == null && session.getAttribute("usuario") == null){
 		%>
 </head>
-<body id="cuerpo" class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <script>
 		Swal.fire({
 			  title: 'Espera!',
@@ -31,18 +31,7 @@
 			</script>
 		<%
 	}else{
-		if(request.getAttribute("traer") == "noExiste"){%>
-			<script>
-			Swal.fire({
-				  title: 'Espera!',
-				  text: "No existe cliente con ese numero de documento",
-				  icon: 'warning',
-				  showCancelButton: false,
-				  confirmButtonColor: '#3085d6',
-				  confirmButtonText: 'Entiendo'
-				})
-				</script>
-		<%} if(request.getAttribute("respuesta") == "excelente"){
+		if(request.getAttribute("respuesta") == "excelente"){
 			%>
 			<script>
 			Swal.fire({
@@ -51,8 +40,6 @@
 				  icon: 'success',
 				  showCancelButton: false,
 				  confirmButtonColor: '#3085d6'
-				}).then((result) => {
-					location.href = "http://localhost:6450/login/VentasServlet?accion=factura";
 				})
 				</script>
 	<%} else if(request.getAttribute("respuesta") == "error") {
@@ -65,12 +52,22 @@
 				  showCancelButton: false,
 				  confirmButtonColor: '#3085d6',
 				  confirmButtonText: 'Entiendo'
-				}).then((result) => {
-					location.href = "http://localhost:6450/login/VentasServlet?accion=factura";
 				})
 				</script>
 				
 		<%}
+		if(request.getAttribute("traer") == "noexiste"){%>
+		<script>
+		Swal.fire({
+			  title: 'Espera!',
+			  text: "No existe cliente con ese numero de documento",
+			  icon: 'warning',
+			  showCancelButton: false,
+			  confirmButtonColor: '#3085d6',
+			  confirmButtonText: 'Entiendo'
+			})
+			</script>
+	<%} 
 	%>
 <div class="wrapper">
       <!-- Preloader -->

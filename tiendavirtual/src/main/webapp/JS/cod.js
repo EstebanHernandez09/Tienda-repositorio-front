@@ -1,15 +1,30 @@
 /**
  * 
  */
-
+function validarExt(){
+	var fileinput = document.getElementById("archivo");
+        var fileRuta = fileinput.value;
+        var extension = /(.csv)$/i;
+        if(!extension.exec(fileRuta)){ 
+          Swal.fire({
+            title: "Espera",
+            text: "Recuerda que solo se pueden enviar archivos con extension .csv",
+            icon: "warning",
+            showConfirmButton: true
+          });  
+          fileinput.value = '';
+          return false;
+        }
+}
 
 function cargarArchivo(elemento){
-	var file = elemento.files[0];
-	var objHidden = document.formulario.nombre;
-	objHidden.value = file.name;
-	document.formulario.action = "CargarArchivo";
-	document.formulario.submit();
-	//alert("se proceso");
+			fileinput1.value = '';
+			var file = elemento.files[0];
+			var objHidden = document.formulario.nombre;
+			objHidden.value = file.name;
+			document.formulario.action = "CargarArchivo";
+			document.formulario.submit();
+			//alert("se proceso");
 }
 
 

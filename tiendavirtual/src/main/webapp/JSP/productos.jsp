@@ -485,7 +485,7 @@
 										
 										<form method="post" name="formulario" enctype="multipart/form-data">
 											<div class="row form-group">
-													<input type="file" name="archivo" id="archivo" style="margin: auto;" accept=".csv" class="filestyle" data-buttonText="Seleccione archivo" data-buttonText="Seleccione archivo .csv">
+													<input type="file" name="archivo" id="archivo" style="margin: auto;" accept=".csv" class="filestyle" data-buttonText="Seleccione archivo" data-buttonText="Seleccione archivo .csv" onchange="return validarExt()">
 											</div>
 												<input type="hidden" name="nombre" value="">
 												<br>

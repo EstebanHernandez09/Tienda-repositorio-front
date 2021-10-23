@@ -104,7 +104,6 @@
 				})
 				</script>
 		  <%} else if(request.getAttribute("respuesta") == "eliminado") {%>
-		}
 			<script>
 				Swal.fire({
 					  title: 'Excelente!',
@@ -120,6 +119,28 @@
 				Swal.fire({
 					  title: 'Error!',
 					  text: "No se ha podido eliminado el producto",
+					  icon: 'error',
+					  showCancelButton: false,
+					  confirmButtonColor: '#3085d6',
+					  confirmButtonText: 'Entiendo'
+				})
+			</script>
+		<%} else if(request.getAttribute("respuesta") == "importado") {%>
+			<script>
+				Swal.fire({
+					  title: 'Excelente!',
+					  text: "Los productos se han importado correctamente",
+					  icon: 'success',
+					  showCancelButton: false,
+					  confirmButtonColor: '#3085d6',
+					  confirmButtonText: 'Entiendo'
+				})
+			</script>
+		<%} else if(request.getAttribute("respuesta") == "errorimportado") {%>
+			<script>
+				Swal.fire({
+					  title: 'Error!',
+					  text: "No se han podido importar los productos",
 					  icon: 'error',
 					  showCancelButton: false,
 					  confirmButtonColor: '#3085d6',
@@ -457,40 +478,24 @@
 										<div class="divider">
 											<br>
 										</div>
-										<img width="300px" height="200px" src="${pageContext.request.contextPath}/img/Excel.png" alt="" class="img-size-10 mr-3">
+										<img width="200px" height="200px" src="${pageContext.request.contextPath}/img/csv.png" alt="" class="img-size-10 mr-3">
 										<div class="divider">
 											<br>
 										</div>
 										
 										<form method="post" name="formulario" enctype="multipart/form-data">
-											<div class="row">
-												<div class="col-11">
-													<input type="file" name="archivo" class="form-control" id="archivo" >
-												</div>
-												<input type="text" name="nombre" value="">
-												<div class="col-1">
-													<input type="submit" value="Procesar" name="Procesar"  class="btn btn-success aling-center" onclick="cargarArchivo(archivo)">
-												</div>
+											<div class="row form-group">
+													<input type="file" name="archivo" id="archivo" style="margin: auto;" accept=".csv" class="filestyle" data-buttonText="Seleccione archivo" data-buttonText="Seleccione archivo .csv">
 											</div>
-										</form>
-										
-										
-								<!-- 	<form method="post" name="formulario" enctype="multipart/form-data">
-										<div class="row form-group">
-											<input type="file" name="archivo" id="archivo" style="margin: auto;" accept=".csv" class="filestyle" data-buttonText="Seleccione archivo" data-buttonText="Seleccione archivo .csv">
-										</div>
-									</div>
-								</div>
-								<br>
-								<div class="row">
-									<div class="text-center" style="margin: auto;">
-										<br>
-										<input type="submit" value="Procesar" name="Procesar" onclick="cargarArchivo(archivo)" class="btn btn-success aling-center">
-									</div>
-								</div>
-								<input type="hidden" name="nombre" value="">
-								<input type="hidden" name="nombre2" value="">
-								</form> -->	
+												<input type="hidden" name="nombre" value="">
+												<br>
+												<div class="row">
+													<div class="text-center" style="margin: auto;">
+														<br>
+														<input type="submit" value="Procesar" name="procesar" onclick="cargarArchivo(archivo)" class="btn btn-success aling-center">
+													</div>
+												</div>
+										 </form>
 								<br>
 
 							</div>

@@ -1,27 +1,29 @@
 package tiendavirtual;
 
+import java.io.BufferedReader;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
-import com.csvreader.CsvReader;
-
 /**
  * Servlet implementation class CargarArchivo
  */
 @WebServlet("/CargarArchivo")
+@MultipartConfig
 public class CargarArchivo extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	List<Productos> listaProductos= new ArrayList<>();
+	Productos lista_producto = new Productos();
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -42,109 +44,96 @@ public class CargarArchivo extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String accion = request.getParameter("Procesar");
-		if (accion.equals("Procesar")) {
-			System.out.println("Procesar");
-		}
+		long nit = 0, cod = 0;
+		double compra = 0, venta = 0, iva = 0;
+		String preloader = "preloader", vali = "", nom = "";
+		int respuesta = 0;
 		System.out.println("Entro Sevlet");
 		String nomb = request.getParameter("nombre");
-		System.out.println(nomb);
 		Part arch = request.getPart("archivo");
-		String process = request.getParameter("Procesar");
+		String process = request.getParameter("procesar");
 		InputStream is = arch.getInputStream();
-		Charset charset = Charset.forName("UTF-8");
-		
-		if (process != null) {
-			if(is.available() ==0) {
-				is.close();
-				System.out.println("Entro error sin archivo");
-				request.setAttribute("error", 1);//error no se ha seleccionado el archivo
-				request.getRequestDispatcher("/ProductosServlet?accion=Listar").forward(request, response);
-			}else {
-				if(ProductosJSON.validarCSV(nomb)) {
+		String cadena;
+		BufferedReader b = new BufferedReader(new InputStreamReader(is));
+		lista_producto = new Productos(); 
+		ArrayList lista = new ArrayList();
+		ArrayList listas = new ArrayList();
+		while((cadena = b.readLine())!=null) {
+			  String result = cadena.replaceAll("\"", "");
+	         // System.out.println(result);
+	          lista.add(result);
+	      }
+		//System.out.println(lista);
+		lista.remove(0);
+		for(int i=0; i<lista.size();i++) {
+			String result = lista.get(i).toString();
+			//System.out.println(lista.get(i).toString());
+			//System.out.println(listas);
+			String[] arr = result.split(",");
+	        for (String corr: arr) {
+	        	listas.add(corr);
+	        	//System.out.println(corr);
+	        }
+		}
+		long cont=0;
+		for(int i=0; i<listas.size();i++) {
+			//System.out.println(listas.get(i));
+			if(cont<=5) {
+				String val = String.valueOf(listas.get(i));
+				if(cont == 0) {
+					cod = Long.parseLong(val);
+					System.out.println(cod);
+				}else if(cont == 1) {
+					iva = Double.parseDouble(val);
+					System.out.println(iva);
+				}else if(cont == 2) {
+					nit = Long.parseLong(val);
+					System.out.println(nit);
+				}else if(cont == 3) {
+					nom = val;
+					System.out.println(nom);
+				}else if(cont == 4) {
+					compra = Double.parseDouble(val);
+					System.out.println(compra);
+				}else if(cont == 5) {
+					venta = Double.parseDouble(val);
+					System.out.println(venta);
+					cont=-1;
+					lista_producto.setCodigo_producto(Long.valueOf(cod));
+					lista_producto.setIvacompra(iva);
+					lista_producto.setNitproveedor(nit);
+					lista_producto.setNombre_producto(nom);
+					lista_producto.setPrecio_compra(compra);
+					lista_producto.setPrecio_venta(venta);
 					try {
-						String registros = "";
-						boolean reg_no_cargados = false;
-						System.out.println("entro a csvreader");
-						CsvReader leerproducto = new CsvReader(is, charset);
-						leerproducto.readHeaders();
-						List<Productos> productos = new ArrayList<Productos>(); // Lista donde se guardara los datos
-						while(leerproducto.readRecord()) {
-							String codigo = leerproducto.get(0);
-							String iva = leerproducto.get(1);
-							String nit = leerproducto.get(2);
-							String nombre = leerproducto.get(3);
-							String compra = leerproducto.get(4);
-							String venta = leerproducto.get(5);
-							
-							//a�ade lo leido a una lista tipo productos
-						productos.add(new Productos(Long.parseLong(codigo), Double.parseDouble(iva), Long.parseLong(nit), nombre, Double.parseDouble(compra), Double.parseDouble(venta)));
-						}
-						is.close();
-						System.out.println("Entro en boton");
-						ArrayList<Productos> listafinal = new ArrayList<Productos>();
-						try {
-							
-							ArrayList<Proveedores> lista = ProveedoresJSON.getJSON();
-							for (Proveedores suplier:lista) {
-								for(Productos item:productos) {
-									if(suplier.getNitproveedor() == item.getNitproveedor()) {
-										System.out.println("Entro for if");
-										listafinal.add(item);
-									}else {
-										registros = String.valueOf(item.getNitproveedor())+",";
-										reg_no_cargados =  true;
-									}
-								}
-							}
-						} catch (Exception e) {
-							System.out.println("Entro catch");
-							System.out.println("Catch :(");
-							// TODO: handle exception
-						}
-						String registros2 = "";
-						int ban= 3;
-						int validacion = 0;
-						for(Productos item:listafinal) {
-							ArrayList<Productos> listaproductos = ProductosJSON.getJSON();
-							for(Productos item2:listaproductos) {
-								if(item.getCodigo_producto()!=item2.getCodigo_producto()) {
-									validacion = ProductosJSON.postJSON(item);
-									if(validacion==200) {
-										ban = (ban * 0) + 2;
-									}
-								}else {
-									registros2 = String.valueOf(item.getCodigo_producto())+",";
-								}
-							}		
-						}
-						if(validacion == 200) {
-							System.out.println("carga existosa");
-							request.setAttribute("error", 2); //carga exitosa de csv
-							request.getRequestDispatcher("/ProductosServlet?accion=Listar").forward(request, response);
-						}else {
-							System.out.println("los registros no se cargaron");
-							request.setAttribute("error", 4); //Registros no se cargaron
-							request.getRequestDispatcher("/ProductosServlet?accion=Listar").forward(request, response);
-						}
-					}catch(Exception e){
-						System.out.println("Entro datos invalidos");
-						request.setAttribute("error", 0);//error datos leidos invalidos
-						request.getRequestDispatcher("/ProductosServlet?accion=Listar").forward(request, response);
-					}finally {
-						is.close();
-					}
-				}else {
-					is.close();
-					System.out.println("Entro error formato");
-					request.setAttribute("error", 3);//error datos leidos invalidos
-					request.getRequestDispatcher("/ProductosServlet?accion=Listar").forward(request, response);
-					//request.getRequestDispatcher("/ValidacionProductos?validar=3&error=3").forward(request, response);
+						System.out.println("llego a json");
+			    		 respuesta = ProductosJSON.postJSON(lista_producto);
+			    	}catch (IOException e){
+			    		// TODO: handle exception
+			    		e.printStackTrace();
+			    	}
 				}
-			}		
+				cont++;
+			}else {
+				cont=0;
+			}
 		}
 		
-
+		if (respuesta == 200) {
+			vali = "importado";
+			request.setAttribute("respuesta", vali);
+			request.setAttribute("preloader", preloader);
+			request.getRequestDispatcher("/ProductosServlet?accion=Listar").forward(request, response);
+			System.out.println("productos Agregados");
+		} else {
+			vali = "errorimportado";
+			request.setAttribute("respuesta", vali);
+			request.setAttribute("preloader", preloader);
+			request.getRequestDispatcher("/ProductosServlet?accion=Listar").forward(request, response);
+			System.out.println("productos no Agregados");
+			System.out.println(respuesta);
+		}
+		//System.out.println(listas);
+		b.close();
 	}
-
 }

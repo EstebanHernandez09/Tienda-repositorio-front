@@ -18,6 +18,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Esteban Hernandez/Downloads/csv/javacsv.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Esteban Hernandez/Downloads/javacsv/javacsv.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
